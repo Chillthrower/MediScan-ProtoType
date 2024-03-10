@@ -24,7 +24,7 @@ from django.conf import settings
 from .prediction import predictDisease
 from django.views.decorators.csrf import csrf_exempt
 from PIL import Image
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from django.urls import reverse
 
 # Create your views here.
