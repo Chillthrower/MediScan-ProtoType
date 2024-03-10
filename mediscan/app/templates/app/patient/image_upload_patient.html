@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Image</title>
+</head>
+<body>
+    <h1>Upload Image</h1>
+    <form id="uploadForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <br>
+        <label for="id_images">Images:</label>
+        <input type="file" id="id_images" name="images" multiple accept="image/*" required>
+        <br>
+        <button id="uploadButton" type="submit">Upload</button>
+        <button id="generateButton">Generate</button>
+        <button id="nextButton" disabled>Next</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#generateButton').click(function() {
+                alert('Model training started!');
+                $('#generateButton').prop('disabled', true); 
+                $('#uploadButton').prop('disabled', true);
+
+                // Retrieve name from the URL query string
+                const urlParams = new URLSearchParams(window.location.search);
+                const name = urlParams.get('name');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/train_patient/',
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    success: function(response) {
+                        alert('Model training completed!');
+                        $('#nextButton').prop('disabled', false);
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error: ' + xhr.responseText);
+                        $('#generateButton').prop('disabled', false);
+                        $('#uploadButton').prop('disabled', false);
+                    }
+                });
+            });
+
+            $('#nextButton').click(function() {
+                window.location.href = '/patient_login/';
+            });
+        });
+    </script>
+</body>
+</html>

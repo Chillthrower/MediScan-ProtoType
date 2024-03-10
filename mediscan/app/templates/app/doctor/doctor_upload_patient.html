@@ -1,0 +1,19 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Classification</title>
+</head>
+<body>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="image">
+        <label for="uid">UID:</label>
+        <input type="text" name="uid" id="uid">
+        <label for="contact">Contact Number:</label>
+        <input type="text" name="contact" id="contact">
+        <button type="submit">Classify Image</button>
+    </form>
+</body>
+</html>

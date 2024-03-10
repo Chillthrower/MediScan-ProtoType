@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enter UID and Contact</title>
+</head>
+<body>
+    <h1>Enter UID and Contact</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="uid">UID:</label>
+        <input type="text" name="uid" id="uid"><br><br>
+        <label for="contact">Contact Number:</label>
+        <input type="text" name="contact" id="contact"><br><br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,141 @@
+* {
+    box-sizing: border-box;
+    
+}
+
+body {
+    margin: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+header {
+    background-color: #f2f2f2 ;
+    
+    
+    text-align: center;
+    /* border-bottom: 2px solid #ffcc00; */
+}
+
+nav {
+    background-color: #333;
+    overflow: hidden;
+}
+
+nav a {
+    text-decoration: none;
+    padding: 20px;
+    text-align: center;
+    float: left;
+    color: white;}
+
+    h3{
+        color: aliceblue;
+        font-weight: bolder;
+        float: right;
+        padding-right: 5%;
+    
+    }
+
+/* nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #ffcc00;
+} */
+
+.content {
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    
+        text-align: center;
+        /* padding: 10%;*/
+        padding-bottom:15%; 
+        background-color: #f2f2f2;
+    
+}
+
+.side-content {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.side-content img {
+    width: 300px;
+    height: 300px;
+    display: block;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.side-content p {
+    margin-top: 20px;
+    color: #555;
+    text-align: justify;
+}
+
+
+
+/* .button:hover {
+    background-color: #45a049;
+} */
+
+/* @media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+    }
+    .button-container {
+        margin-top: 20px;
+    }
+} */
+img{
+    padding: 30px;
+}
+/* .container {
+    display: flex;
+    align-items: center; /* Vertically center items */
+  /* } */ */
+  
+  img{
+    max-width: 100%;
+    height: auto;
+    margin-right: 20px; /* Adjust spacing between image and text */
+  }
+ p {
+    margin-top: 20px;
+    color: #333;
+    text-align: justify;
+    padding: 20px;
+    font-size: x-large;
+    font-weight: bold;
+    margin-bottom: 20px; 
+}
+.image1{
+    padding: 30px;
+}
+.button-container {
+    text-align: center; /* Align buttons to the center */
+    margin-top: 20px; /* Add some margin at the top */
+}
+
+a:hover{
+    font-size: x-large;
+}
+footer {
+    background-color: #333;
+    overflow: hidden;
+    padding-top: -80%;
+}
+
+footer a {
+    text-decoration: none;
+    padding: 20px;
+    text-align: center;
+    
+    color: white;
+    float: right;
+}

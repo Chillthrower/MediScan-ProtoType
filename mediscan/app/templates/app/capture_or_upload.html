@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Action</title>
+</head>
+<body>
+    
+    <h1>Choose an action</h1>
+    <div>
+        <button id="captureBtn">Capture Image</button>
+        <button id="uploadBtn">Upload Image</button>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const userType = urlParams.get('user_type');
+        const name = urlParams.get('name');
+    
+        let captureUrl, uploadUrl;
+        if (userType === 'doctor') {
+            captureUrl = `{% url 'image_capture_doctor' %}?name=${name}`;
+            uploadUrl = `{% url 'image_upload_doctor' %}?name=${name}`;
+        } else {
+            captureUrl = `{% url 'image_capture_patient' %}?name=${name}`;
+            uploadUrl = `{% url 'image_upload_patient' %}?name=${name}`;
+        }
+    
+        document.getElementById("captureBtn").addEventListener("click", function() {
+            window.location.href = captureUrl;
+        });
+    
+        document.getElementById("uploadBtn").addEventListener("click", function() {
+            window.location.href = uploadUrl;
+        });
+    </script>
+</body>
+</html>

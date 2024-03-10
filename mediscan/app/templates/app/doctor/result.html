@@ -1,0 +1,53 @@
+{% comment %} result.html {% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Classification Result</title>
+</head>
+<body>
+    <h1>Result:</h1>
+    <img src="{{ image_path }}" alt="Uploaded Image">
+    <p>Predicted Class: {{ predicted_class_label }}</p>
+
+    <h2>Patient Information:</h2>
+    {% if patient_records %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Address</th>
+                    <th>Contact</th>
+                    <th>Medical Conditions</th>
+                    <th>Medical History</th>
+                    <th>Medication History</th>
+                    <th>Allergies</th>
+                    <th>Test Results</th>
+                    <th>Hospitalizations</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in patient_records %}
+                    <tr>
+                        <td>{{ record.name }}</td>
+                        <td>{{ record.age }}</td>
+                        <td>{{ record.gender }}</td>
+                        <td>{{ record.address }}</td>
+                        <td>{{ record.contact }}</td>
+                        <td>{{ record.medical_conditions }}</td>
+                        <td>{{ record.medical_history }}</td>
+                        <td>{{ record.medication_history }}</td>
+                        <td>{{ record.allergies }}</td>
+                        <td>{{ record.test_results }}</td>
+                        <td>{{ record.hospitalizations }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No patient records found for the predicted class.</p>
+    {% endif %}
+</body>
+</html>

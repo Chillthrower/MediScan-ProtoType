@@ -1,0 +1,45 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediScan: Disease Prediction Through Symptoms</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/disease.css' %}">
+</head>
+<body>
+    <header>
+        <h1>MediScan: Disease Prediction Through Symptoms</h1>
+    </header>
+    <div class="navbar">
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">ContactUs</a>
+            <a href="#">DiseasePrediction</a>
+            <h3>Mediscan</h3>
+        </nav>
+    </div>
+    <div>
+        <p>Here you can enter your Symptoms and get your predicted disease</p>
+    </div>
+    <div>
+        <form id="symptomForm">
+            {% csrf_token %}
+            <label for="numTextboxes">Enter the number of symptoms:</label>
+            <input type="number" id="numTextboxes" min="1" value="1">
+            <button onclick="createTextboxes(); return false;">Generate Textboxes</button>
+            <div id="outerBox">
+                <div id="textboxContainer">
+                    <!-- Textboxes will be added here -->
+                </div>
+                <button id="submitBtn" type="button" onclick="submitForm()">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div id="predictionsContainer" style="text-align: center;"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'js/disease.js' %}"></script>
+</body>
+</html>

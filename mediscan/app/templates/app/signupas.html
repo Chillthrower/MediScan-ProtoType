@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    {% load static %}
+    <link rel="stylesheet" href={% static "css/person.css" %}>
+</head>
+<body>
+    <div class="container">
+        <h2>Choose Your Role to Sign Up</h2>
+        <a href={% url "doctor_signup" %} class="button">Sign Up as Doctor</a>
+        <a href={% url "patient_signup" %} class="button">Sign Up as Patient</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Details</title>
+</head>
+<body>
+    <h1>Patient Details</h1>
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Address</th>
+            <th>Contact</th>
+            <th>UID</th>
+            <th>Medical Conditions</th>
+            <th>Medical History</th>
+            <th>Medication History</th>
+            <th>Allergies</th>
+            <th>Test Results</th>
+            <th>Hospitalizations</th>
+        </tr>
+        <tr>
+            <td>{{ patient.name }}</td>
+            <td>{{ patient.age }}</td>
+            <td>{{ patient.gender }}</td>
+            <td>{{ patient.address }}</td>
+            <td>{{ patient.contact }}</td>
+            <td>{{ patient.uid }}</td>
+            <td>{{ patient.medical_conditions }}</td>
+            <td>{{ patient.medical_history }}</td>
+            <td>{{ patient.medication_history }}</td>
+            <td>{{ patient.allergies }}</td>
+            <td>{{ patient.test_results }}</td>
+            <td>{{ patient.hospitalizations }}</td>
+        </tr>
+    </table>
+</body>
+</html>

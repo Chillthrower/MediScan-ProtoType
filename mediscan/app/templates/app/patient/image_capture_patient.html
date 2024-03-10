@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Capture</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Image Capture</h1>
+
+    <form id="captureForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <br>
+        <video id="video" width="640" height="480" autoplay></video>
+        <button id="captureButton">Capture Image</button>
+        <button id="generateButton">Generate</button>
+        <button id="nextButton" disabled>Next</button>
+        <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    </form>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const captureButton = document.getElementById('captureButton');
+        const generateButton = document.getElementById('generateButton');
+        const nextButton = document.getElementById('nextButton');
+    
+        // Access webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((err) => {
+                console.error('Error accessing webcam: ', err);
+            });
+    
+        // Capture image from webcam
+        captureButton.addEventListener('click', () => {
+            context.drawImage(video, 0, 0, 640, 480);
+            const imageData = canvas.toDataURL('image/jpeg');
+            
+            // Retrieve name from the URL query string
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            if (!name) {
+                alert('Please provide your full name.');
+                return;
+            }
+    
+            $.ajax({
+                type: "POST",
+                url: '#', // Adjust the URL if needed
+                data: { 
+                    image_data: imageData, 
+                    full_name: name, 
+                    csrfmiddlewaretoken: '{{ csrf_token }}', 
+                    capture: true 
+                },
+                success: function(response) {
+                    alert('Image captured successfully!');
+                }
+            });
+        });
+
+        generateButton.addEventListener('click', () => {
+            alert('Model training started!');
+            generateButton.disabled = true; 
+            captureButton.disabled = true;
+
+            $.ajax({
+                type: 'POST',
+                url: '/train_patient/',
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                success: function(response) {
+                    alert('Model training completed!');
+                    nextButton.disabled = false;
+                },
+                error: function(xhr, status, error) {
+                    alert('Error: ' + xhr.responseText);
+                    generateButton.disabled = false;
+                    captureButton.disabled = false;
+                }
+            });
+        });
+
+        nextButton.addEventListener('click', () => {
+            window.location.href = '/patient_login/';
+        });
+    </script>
+</body>
+</html>

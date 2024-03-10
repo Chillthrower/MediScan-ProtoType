@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Beautiful Webpage</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/main.css" %}">
+    
+</head>
+<body>
+    <header>
+        <h1>MediScan: Unveiling Medical Narratives Through Faces</h1>
+    </header>
+    <div class="navbar">
+        
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">ContactUs</a>
+            <a href="{% url 'signupas' %}">SignUp</a>
+            <a href="{% url 'loginas' %}">Login</a>
+            <a href="{% url 'index' %}">Disease Prediction</a>
+            <h3>Mediscan</h3>
+        </nav>
+        
+    </div>
+    <div class="content">
+        <div class="side-content">
+            <img src="{% static "images/image.jpeg" %}" alt="Health">
+        </div>
+        <div>
+            <p>Welcome to <strong>MediScan: Unveiling Medical Narratives Through Faces</strong>, a revolutionary project at the forefront of healthcare innovation. In critical medical scenarios where verbal communication is limited, MediScan bridges the gap by harnessing the power of facial recognition technology.</p>
+
+            <p>Imagine a scenario where a patient is rushed into the emergency room, unable to communicate vital medical information. With MediScan, healthcare providers can swiftly capture the patient's image and access their medical records from a secure database. This seamless process ensures that critical information, such as allergies and pre-existing conditions, is readily available, enabling faster and more effective treatment.</p>
+            
+            <p>At MediScan, we prioritize patient privacy and confidentiality. Our system implements stringent measures to comply with privacy regulations, ensuring that patient data remains secure at all times.</p>
+            
+            <p>Join us as we revolutionize emergency medical care, one face at a time. With MediScan, the future of healthcare is more efficient, compassionate, and connected.</p>
+            
+            
+        </div>
+    </div>
+    <footer>
+        <a href="#">FAQ</a>
+        <a href="#">Contact</a>
+        <a href="#">Terms and conditions</a>
+        <a href="#">&copy;2023 Mediscan</a>
+    </footer>
+</body>
+</html>
