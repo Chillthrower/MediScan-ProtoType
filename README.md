@@ -64,3 +64,10 @@ In critical situations such as sudden illness or natural disasters, accessing a 
     ```
 
 Now, your MediScan project should be up and running!
+
+## Contributors
+
+- [Harshal Rodrigues](https://github.com/Harshal5704)
+- [Shreevathsa R Tantry](https://github.com/Shreevathsatantry)
+- [Vishanth S Chandan](https://github.com/vishanths)
+- [Sarvajith Adyanthaya](https://github.com/Chillthrower)
