@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Image Capture</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <h1>Image Capture</h1>
 
-    <form id="captureForm" method="post" enctype="multipart/form-data">
+    <form id="captureForm" method="post" enctype="multipart/form-data" action="{% url 'doctor_capture_patient' %}">
         {% csrf_token %}
+        <br>
         <video id="video" width="640" height="480" autoplay></video>
-        <button id="captureButton">Capture Image</button>
+        <button type="submit" id="captureButton">Capture Image</button>
+        <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+        <input type="hidden" name="image_data" id="image_data" value="">
     </form>
 
     <script>
         const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
         const captureButton = document.getElementById('captureButton');
-
+    
         // Access webcam
         navigator.mediaDevices.getUserMedia({ video: true })
             .then((stream) => {
@@ -26,38 +30,12 @@
             .catch((err) => {
                 console.error('Error accessing webcam: ', err);
             });
-
+    
         // Capture image from webcam
-        captureButton.addEventListener('click', (event) => {
-            event.preventDefault();  // Prevent default form submission
-    
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        captureButton.addEventListener('click', () => {
+            context.drawImage(video, 0, 0, 640, 480);
             const imageData = canvas.toDataURL('image/jpeg');
-    
-            // Append the image data to the form data
-            const formData = new FormData();
-            formData.append('image_data', imageData);
-            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-    
-            // Send the AJAX request with the form data
-            $.ajax({
-                type: "POST",
-                url: "/doctor_capture_patient/",
-                data: formData,
-                processData: false,  // Prevent jQuery from automatically processing the data
-                contentType: false,  // Prevent jQuery from automatically setting the content type
-                success: function(response) {
-                    alert('Image captured successfully!');
-                    // Redirect to the page where the user can enter UID and contact
-                    window.location.href = '/enter_uid_contact/';
-                },
-                error: function(xhr, status, error) {
-                    alert('Error: ' + xhr.responseText);
-                }
-            });
+            document.getElementById('image_data').value = imageData;
         });
     </script>
 </body>

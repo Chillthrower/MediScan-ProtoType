@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+</head>
+<body>
+    <h1>Upload Image</h1>
+    <form id="uploadForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="image">
+        <input type="hidden" name="email" value="{{ email }}">
+        <button type="submit">Upload</button>
+    </form>
+
+    <script>
+        // Get the email from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+
+        // Append email parameter to the form action URL
+        document.getElementById("uploadForm").action = `/doctor_upload_email/?email=${email}`;
+
+    </script>
+</body>
+</html>

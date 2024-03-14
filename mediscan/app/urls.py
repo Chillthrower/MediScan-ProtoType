@@ -22,7 +22,7 @@ urlpatterns = [
     path('record/', views.record, name='record'),
     path('add_patient_record/', views.add_patient_record, name='add_patient_record'),
     path('cool/', views.cool, name='cool'),
-    path('capture_or_upload_patient/', views.capture_or_upload_patient, name='capture_or_upload_patient'),
+    path('doctor_capture_or_upload_patient/', views.doctor_capture_or_upload_patient, name='doctor_capture_or_upload_patient'),
     path('classify_image/', views.classify_image, name='classify_image'), 
     path('doctor_capture_patient/', views.doctor_capture_patient, name='doctor_capture_patient'),
     path('patient_cred/', views.patient_cred, name='patient_cred'),
@@ -31,6 +31,12 @@ urlpatterns = [
     path('doctor_classify_image/<str:uid>/<str:contact>/', views.doctor_classify_image, name='doctor_classify_image'),
     path('index/', views.index, name='index'),
     path('predict_disease/', views.predict_disease, name='predict_disease'),
+    path('capture_or_upload_patient/', views.capture_or_upload_patient, name='capture_or_upload_patient'),
+    path('doctor_upload_email/', views.doctor_upload_email, name='doctor_upload_email'),
+    path('login_capture_or_upload/', views.login_capture_or_upload, name='login_capture_or_upload'),
+    path('image_login_upload_patient/', views.image_login_upload_patient, name='image_login_upload_patient'),
+    path('image_login_capture_patient/', views.image_login_capture_patient, name='image_login_capture_patient'),
+    path('doctor_capture_email/', views.doctor_capture_email, name='doctor_capture_email'),
 ]
 
 if settings.DEBUG:

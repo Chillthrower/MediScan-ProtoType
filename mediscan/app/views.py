@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
 from .models import *
 from django.http import JsonResponse, HttpResponseRedirect
@@ -26,6 +26,7 @@ from django.views.decorators.csrf import csrf_exempt
 from PIL import Image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from django.urls import reverse
+from tensorflow.keras.preprocessing import image
 
 # Create your views here.
 
@@ -41,8 +42,12 @@ def signupas(request):
 
 def capture_or_upload(request):
     name = request.GET.get('name', '')
-    print(name) # Get the name parameter from the URL query string
+    print(name)
     return render(request, 'app/capture_or_upload.html', {'name': name})
+
+def login_capture_or_upload(request):
+    email = request.GET.get('email', '')
+    return render(request, 'app/login_capture_or_upload.html', {'email': email})
 
 def loginas(request):
     return render(request, 'app/loginas.html')
@@ -57,12 +62,14 @@ def patient_cred_result(request):
 def record(request):
     return render(request, 'app/doctor/record.html')
 
-def capture_or_upload_patient(request):
-    return render(request, 'app/doctor/capture_or_upload_patient.html')
+def doctor_capture_or_upload_patient(request):
+    return render(request, 'app/doctor/doctor_capture_or_upload_patient.html')
 
-def preprocess_image(image_path, target_size=(128, 128)):
-    img = load_img(image_path, target_size=target_size)
-    img_array = img_to_array(img) / 255.0
+def preprocess_image(image_path):
+    img = image.load_img(image_path, target_size=(128, 128))
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array = img_array / 255.0
     return img_array
 
 ######################################################   SIGN UP   #############################################################
@@ -73,7 +80,7 @@ def patient_signup(request):
         if form.is_valid():
             name = form.cleaned_data['name']
             form.save()
-            return HttpResponseRedirect(reverse('capture_or_upload') + f'?user_type=patient&name={name}')
+            return HttpResponseRedirect(reverse('capture_or_upload') + f'?user_type=patient&name={name}') #/capture_or_upload/?user_type=patient&name={name}
         else:
             messages.error(request, "Form is not valid.")
     else:
@@ -105,7 +112,8 @@ def patient_login(request):
                 user = Patient.objects.get(email=email)
                 if check_password(password, user.password):
                     login(request, user)
-                    return redirect('patient_cred')
+                    # return redirect('patient_cred')
+                    return HttpResponseRedirect(reverse('login_capture_or_upload') + f'?user_type=patient&email={email}')
                 else:
                     messages.error(request, 'Invalid email or password. Please try again.')
             except Patient.DoesNotExist:
@@ -466,45 +474,23 @@ def doctor_classify_image(request, uid, contact):
     }
     return render(request, 'app/doctor/result.html', context)
 
+
 def doctor_capture_patient(request):
-    if request.method == 'POST' and 'capture' in request.POST:
-        image_data = request.POST.get('image_data')
-        if image_data:
-            img_data = base64.b64decode(image_data.split(",")[1])
+    if request.method == 'POST':
+        frame = request.POST.get('image_data')
+        img_data = frame.split(",")[1]
+        img_data = bytes(img_data, 'utf-8')
 
-            upload_folder = os.path.join(settings.MEDIA_ROOT, 'uploads')
-            if os.path.exists(upload_folder):
-                shutil.rmtree(upload_folder)
-            os.makedirs(upload_folder)
+        media_dir = os.path.join('media/uploads')
+        if not os.path.exists(media_dir):
+            os.makedirs(media_dir)
 
-            input_image_path = os.path.join(upload_folder, 'captured_image.jpg')
-            with open(input_image_path, 'wb+') as destination:
-                destination.write(img_data)
-
-            return redirect('enter_uid_contact')
+        with open(os.path.join(media_dir, 'captured_image.jpg'), 'wb') as f:
+            f.write(base64.b64decode(img_data))
+        
+        return redirect('enter_uid_contact')  # Assuming 'enter_uid_contact' is the URL name for the desired page
 
     return render(request, 'app/doctor/doctor_capture_patient.html')
-
-def doctor_classify_image(request, uid, contact):
-    model_path = os.path.join(settings.BASE_DIR, 'YOLO.h5')
-    model = load_model(model_path)
-
-    input_image = preprocess_image(os.path.join(settings.MEDIA_ROOT, 'uploads', 'captured_image.jpg'))
-    predictions = model.predict(input_image)
-    predicted_class_index = np.argmax(predictions)
-
-    data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
-    class_labels = sorted(os.listdir(data_dir))
-    predicted_class_label = class_labels[predicted_class_index]
-
-    patient_records = PatientRecord.objects.filter(name=predicted_class_label, uid=uid, contact=contact)
-
-    context = {
-        'image_path': os.path.join(settings.MEDIA_URL, 'uploads', 'captured_image.jpg'),
-        'predicted_class_label': predicted_class_label,
-        'patient_records': patient_records
-    }
-    return render(request, 'app/doctor/result.html', context)
 
 def classify_image(request):
     if request.method == 'POST' and request.FILES['image']:
@@ -576,3 +562,99 @@ def predict_disease(request):
         return JsonResponse(predictions)
     else:
         return JsonResponse({'error': 'Invalid request'})
+
+######################################################   PATIENTS   #############################################################
+
+def capture_or_upload_patient(request):
+    return render(request, 'app/patient/capture_or_upload_patient.html')
+
+from io import BytesIO
+
+def preprocess_input_image(image_file):
+    # Read the content of the uploaded file
+    image_content = image_file.read()
+    # Create a BytesIO object with the content
+    image_stream = BytesIO(image_content)
+    # Load the image from the BytesIO object
+    img = image.load_img(image_stream, target_size=(128, 128))
+    # Convert the image to a NumPy array
+    img_array = image.img_to_array(img)
+    # Expand the dimensions to match the expected input shape of the model
+    img_array = np.expand_dims(img_array, axis=0)
+    # Normalize the pixel values to the range [0, 1]
+    img_array /= 255.0
+    return img_array
+
+def doctor_upload_email(request):
+    email = request.GET.get('email', '')
+    if request.method == 'POST' and request.FILES.get('image'):
+        model_path = os.path.join(settings.BASE_DIR, 'YOLO.h5')
+        model = load_model(model_path)
+
+        input_image = preprocess_input_image(request.FILES['image'])
+
+        predictions = model.predict(input_image)
+        predicted_class_index = predictions.argmax()
+
+        data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
+        class_labels = sorted(os.listdir(data_dir))
+        predicted_class_label = class_labels[predicted_class_index]
+        print(predicted_class_label)
+
+        patient = get_object_or_404(Patient, name=predicted_class_label)
+        if patient.email == email:
+            patient = Patient.objects.get(name=predicted_class_label, email=email)
+            patient_records = PatientRecord.objects.filter(name=predicted_class_label)
+            return render(request, 'app/patient/patient_cred_result.html', {'patient_records': patient_records})
+        else:
+            return JsonResponse({'result': 'Email does not match'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def image_login_upload_patient(request):
+    email = request.GET.get('email', '')
+    return render(request, 'app/patient/image_login_upload_patient.html', {'email': email})
+
+def image_login_capture_patient(request):
+    email = request.GET.get('email', '')
+    return render(request, 'app/patient/image_login_capture_patient.html', {'email': email})
+
+def preprocess_input1_image(img):
+    img = img.resize((128, 128))  # Resize image to desired dimensions
+    img_array = np.array(img)  # Convert PIL Image to numpy array
+    img_array = img_array / 255.0  # Normalize pixel values
+    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+    return img_array
+
+def doctor_capture_email(request):
+    email = request.GET.get('email', '')
+    if request.method == 'POST' and request.POST.get('image_data'):
+        model_path = os.path.join(settings.BASE_DIR, 'YOLO.h5')
+        model = load_model(model_path)
+
+        frame = request.POST.get('image_data')
+        img_data = frame.split(",")[1]
+        img_data = base64.b64decode(img_data)
+        
+        img = Image.open(BytesIO(img_data))
+
+        input_image = preprocess_input1_image(img)
+
+        predictions = model.predict(input_image)
+        predicted_class_index = predictions.argmax()
+
+        data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
+        class_labels = sorted(os.listdir(data_dir))
+        predicted_class_label = class_labels[predicted_class_index]
+        print(predicted_class_label)
+        
+        patient = get_object_or_404(Patient, name=predicted_class_label)
+
+        if patient.email == email:
+            patient = Patient.objects.get(name=predicted_class_label, email=email)
+            patient_records = PatientRecord.objects.filter(name=predicted_class_label)
+            return render(request, 'app/patient/patient_cred_result.html', {'patient_records': patient_records})
+        else:
+            return JsonResponse({'result': 'Email does not match'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
