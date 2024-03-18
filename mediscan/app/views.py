@@ -585,16 +585,68 @@ def preprocess_input_image(image_file):
     img_array /= 255.0
     return img_array
 
+# def doctor_upload_email(request):
+#     email = request.GET.get('email', '')
+#     if request.method == 'POST' and request.FILES.get('image'):
+#         model_path = os.path.join(settings.BASE_DIR, 'YOLO.h5')
+#         model = load_model(model_path)
+
+#         input_image = preprocess_input_image(request.FILES['image'])
+
+#         predictions = model.predict(input_image)
+#         predicted_class_index = predictions.argmax()
+
+#         data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
+#         class_labels = sorted(os.listdir(data_dir))
+#         predicted_class_label = class_labels[predicted_class_index]
+#         print(predicted_class_label)
+
+#         patient = get_object_or_404(Patient, name=predicted_class_label)
+#         if patient.email == email:
+#             patient = Patient.objects.get(name=predicted_class_label, email=email)
+#             patient_records = PatientRecord.objects.filter(name=predicted_class_label)
+#             return render(request, 'app/patient/patient_cred_result.html', {'patient_records': patient_records})
+#         else:
+#             return JsonResponse({'result': 'Email does not match'}, status=400)
+
+#     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+import torch
+from torchvision.transforms import transforms
+from PIL import Image
+from facenet_pytorch import InceptionResnetV1
+
 def doctor_upload_email(request):
     email = request.GET.get('email', '')
     if request.method == 'POST' and request.FILES.get('image'):
-        model_path = os.path.join(settings.BASE_DIR, 'YOLO.h5')
-        model = load_model(model_path)
+        model_path = os.path.join(settings.BASE_DIR, 'trained_model.pt')
+        model = InceptionResnetV1(pretrained='vggface2', classify=True, num_classes=8)
+        model.load_state_dict(torch.load("trained_model.pt", map_location=torch.device('cpu')))
+        
+        model.eval()
 
-        input_image = preprocess_input_image(request.FILES['image'])
+        transform = transforms.Compose([
+            transforms.Resize(299),
+            transforms.CenterCrop(299),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
 
-        predictions = model.predict(input_image)
-        predicted_class_index = predictions.argmax()
+        image_path = request.FILES['image']
+        image = Image.open(image_path)
+        input_tensor = transform(image)
+        input_batch = input_tensor.unsqueeze(0)
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = model.to(device)
+        input_batch = input_batch.to(device)
+        
+        with torch.no_grad():
+            output = model(input_batch)
+
+        # predictions = model.predict(input_image)
+        # predicted_class_index = predictions.argmax()
+        predicted_class_index = torch.argmax(output, dim=1).item()
 
         data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
         class_labels = sorted(os.listdir(data_dir))
