@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Beautiful Webpage</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static "css/main.css" %}">
+    <!-- <link rel="stylesheet" href="{% static "css/main.css" %}"> -->
+    <link rel="stylesheet" href="{% static "css/test2.css" %}">
     
 </head>
 <body>
+    
     <header>
         <h1>MediScan: Unveiling Medical Narratives Through Faces</h1>
     </header>
@@ -25,21 +27,39 @@
         </nav>
         
     </div>
+    
     <div class="content">
         <div class="side-content">
-            <img src="{% static "images/image.jpeg" %}" alt="Health">
+            <!-- <img src="{% static "images/image.jpeg" %}" alt="Health"> -->
+            <div class="imgdiv">
+            <!-- <img src="image.jpeg"> -->
+        </div>
         </div>
         <div>
-            <p>Welcome to <strong>MediScan: Unveiling Medical Narratives Through Faces</strong>, a revolutionary project at the forefront of healthcare innovation. In critical medical scenarios where verbal communication is limited, MediScan bridges the gap by harnessing the power of facial recognition technology.</p>
-
-            <p>Imagine a scenario where a patient is rushed into the emergency room, unable to communicate vital medical information. With MediScan, healthcare providers can swiftly capture the patient's image and access their medical records from a secure database. This seamless process ensures that critical information, such as allergies and pre-existing conditions, is readily available, enabling faster and more effective treatment.</p>
-            
-            <p>At MediScan, we prioritize patient privacy and confidentiality. Our system implements stringent measures to comply with privacy regulations, ensuring that patient data remains secure at all times.</p>
-            
-            <p>Join us as we revolutionize emergency medical care, one face at a time. With MediScan, the future of healthcare is more efficient, compassionate, and connected.</p>
-            
-            
+            <p class="para">Welcome to MediScan: Revolutionizing healthcare with facial recognition technology. In urgent situations, MediScan swiftly accesses patients' medical records through facial scanning, ensuring immediate treatment. Committed to patient privacy, we adhere to strict regulations, ensuring data security. Join us in transforming emergency care, one face at a time.</p> 
         </div>
+        <div class="section">
+            <div class="card card1">
+                <h2>How this works?</h2>
+                <p>Our website simplifies medical record access through facial recognition technology. Users upload a photo, and our system swiftly retrieves their medical history. This efficient process enhances patient care by providing instant and secure access to vital information.</p>
+            </div>
+            <div class="card card2">
+                <h2>Features</h2>
+                <ul>
+                    <li>Instant and secure access to medical records.</li>
+                    <li>Streamlined healthcare processes with reduced paperwork.</li>
+                    <li>User-friendly interface for easy navigation.</li>
+                    <li>Robust security measures ensuring confidentiality of data.</li>
+                </ul>
+            </div>
+            <div class="card card3">
+                <h2>Our mission</h2>
+                <p>At Mediscan, our mission is to empower individuals by providing seamless access to their medical records through innovative facial recognition technology. We strive to revolutionize the healthcare experience by streamlining processes, ensuring data security, and fostering personalized care for all.</p>
+            </div>
+        </div>
+        
+        
+        
     </div>
     <footer>
         <a href="#">FAQ</a>

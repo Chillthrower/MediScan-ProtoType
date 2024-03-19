@@ -4,14 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    {% load static %}
-    <link rel="stylesheet" href={% static "css/person.css" %}>
+    <!-- {% load static %}
+    <link rel="stylesheet" href={% static "css/person.css" %}> -->
+    <link rel="stylesheet" href="{% static 'css/loginuptest.css' %}">
 </head>
 <body>
-    <div class="container">
-        <h2>Choose Your Role to Login</h2>
-        <a href= "{% url 'doctor_login' %}" class="button">Login as Doctor</a>
-        <a href="{% url 'patient_login' %}" class="button">Login as Patient</a>
+    <h1>Choose Your Role to Login</h1>
+    <div class="content">
+       <div class="section">
+        <div class="card">
+        <a href= "{% url 'doctor_login' %}" class="button1">Login as Doctor</a>
+        <a href="{% url 'patient_login' %}" class="button2">Login as Patient</a>
     </div>
+</div>
+</div>
 </body>
 </html>

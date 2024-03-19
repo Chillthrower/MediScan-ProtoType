@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,5 +13,27 @@
         <a href={% url "doctor_signup" %} class="button">Sign Up as Doctor</a>
         <a href={% url "patient_signup" %} class="button">Sign Up as Patient</a>
     </div>
+</body>
+</html> {% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/loginuptest.css' %}">
+</head>
+<body>
+    <h1>Choose Your Role to Login</h1>
+    <div class="content">
+       <div class="section">
+        <div class="card">
+        <a href= "{% url "doctor_signup" %}" class="button1">Signup as Doctor</a>
+        <a href="{% url "patient_signup" %}" class="button2">Signup as Patient</a>
+    </div>
+</div>
+</div>
 </body>
 </html>
