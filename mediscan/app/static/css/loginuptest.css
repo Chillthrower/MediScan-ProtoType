@@ -5,7 +5,7 @@
 h1{
     color: white;
     /* background-color: lightblue; */
-    background-image: url('header.jpg');
+    background-image: url('/static/images/header.jpg');
     text-align: center;
     padding: 1px;
     background-size: cover; /* Ensure the background image covers the entire background */
