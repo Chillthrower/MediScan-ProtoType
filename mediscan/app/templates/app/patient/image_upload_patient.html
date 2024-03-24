@@ -14,7 +14,6 @@
         <br>
         <button id="uploadButton" type="submit">Upload</button>
         <button id="generateButton">Generate</button>
-        <button id="nextButton" disabled>Next</button>
     </form>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -35,7 +34,7 @@
                     headers: {'X-CSRFToken': '{{ csrf_token }}'},
                     success: function(response) {
                         alert('Model training completed!');
-                        $('#nextButton').prop('disabled', false);
+                        window.location.href = '/patient_login/';
                     },
                     error: function(xhr, status, error) {
                         alert('Error: ' + xhr.responseText);
@@ -43,10 +42,6 @@
                         $('#uploadButton').prop('disabled', false);
                     }
                 });
-            });
-
-            $('#nextButton').click(function() {
-                window.location.href = '/patient_login/';
             });
         });
     </script>

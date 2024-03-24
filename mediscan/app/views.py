@@ -426,7 +426,7 @@ def train_model_patient(request):
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     model.summary()
 
-    history = model.fit(train_iterator, epochs=5, validation_data=val_iterator)
+    history = model.fit(train_iterator, epochs=2, validation_data=val_iterator)
 
     model.save('PATIENT.h5')
 
@@ -492,35 +492,103 @@ def doctor_capture_patient(request):
 
     return render(request, 'app/doctor/doctor_capture_patient.html')
 
-def classify_image(request):
-    if request.method == 'POST' and request.FILES['image']:
-        uploaded_image = request.FILES['image']
-        uid = request.POST.get('uid', '')  # How does this work
-        contact = request.POST.get('contact', '')
+# def classify_image(request):
+#     if request.method == 'POST' and request.FILES['image']:
+#         uploaded_image = request.FILES['image']
+#         uid = request.POST.get('uid', '')  # How does this work
+#         contact = request.POST.get('contact', '')
         
+#         upload_folder = os.path.join(settings.MEDIA_ROOT, 'uploads')
+#         if os.path.exists(upload_folder):
+#             shutil.rmtree(upload_folder)
+            
+#         os.makedirs(upload_folder)
+        
+#         input_image_path = os.path.join(upload_folder, uploaded_image.name)
+#         print(input_image_path)
+        
+#         with open(input_image_path, 'wb+') as destination:
+#             for chunk in uploaded_image.chunks():
+#                 destination.write(chunk)
+
+#         model_path = os.path.join(settings.BASE_DIR, 'YOLO.h5')
+#         model = load_model(model_path)
+
+#         input_image = preprocess_image(input_image_path)
+#         predictions = model.predict(input_image)
+#         predicted_class_index = np.argmax(predictions)
+
+#         data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
+#         class_labels = sorted(os.listdir(data_dir))
+#         predicted_class_label = class_labels[predicted_class_index]
+
+#         if uid and contact:
+#             patient_records = PatientRecord.objects.filter(name=predicted_class_label, uid=uid, contact=contact)
+#         elif uid:
+#             patient_records = PatientRecord.objects.filter(name=predicted_class_label, uid=uid)
+#         elif contact:
+#             patient_records = PatientRecord.objects.filter(name=predicted_class_label, contact=contact)
+#         else:
+#             patient_records = PatientRecord.objects.filter(name=predicted_class_label)
+
+#         context = {
+#             'image_path': os.path.join(settings.MEDIA_URL, 'uploads', uploaded_image.name),
+#             'predicted_class_label': predicted_class_label,
+#             'patient_records': patient_records
+#         }
+#         return render(request, 'app/doctor/result.html', context)
+
+#     return render(request, 'app/doctor/doctor_upload_patient.html')
+
+def classify_image(request):
+    uid = request.POST.get('uid', '')  # How does this work
+    contact = request.POST.get('contact', '')
+    if request.method == 'POST' and request.FILES.get('image'):
+        model_path = os.path.join(settings.BASE_DIR, 'trained_model.pt')
+        model = InceptionResnetV1(pretrained='vggface2', classify=True, num_classes=8)
+        model.load_state_dict(torch.load("trained_model.pt", map_location=torch.device('cpu')))
+        
+        model.eval()
+
+        transform = transforms.Compose([
+            transforms.Resize(299),
+            transforms.CenterCrop(299),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
+
+        image_path = request.FILES['image']
         upload_folder = os.path.join(settings.MEDIA_ROOT, 'uploads')
         if os.path.exists(upload_folder):
             shutil.rmtree(upload_folder)
             
         os.makedirs(upload_folder)
         
-        input_image_path = os.path.join(upload_folder, uploaded_image.name)
+        input_image_path = os.path.join(upload_folder, image_path.name)
         print(input_image_path)
         
         with open(input_image_path, 'wb+') as destination:
-            for chunk in uploaded_image.chunks():
+            for chunk in image_path.chunks():
                 destination.write(chunk)
+        image = Image.open(image_path)
+        input_tensor = transform(image)
+        input_batch = input_tensor.unsqueeze(0)
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = model.to(device)
+        input_batch = input_batch.to(device)
+        
+        with torch.no_grad():
+            output = model(input_batch)
 
-        model_path = os.path.join(settings.BASE_DIR, 'YOLO.h5')
-        model = load_model(model_path)
-
-        input_image = preprocess_image(input_image_path)
-        predictions = model.predict(input_image)
-        predicted_class_index = np.argmax(predictions)
+        # predictions = model.predict(input_image)
+        # predicted_class_index = predictions.argmax()
+        predicted_class_index = torch.argmax(output, dim=1).item()
 
         data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
         class_labels = sorted(os.listdir(data_dir))
         predicted_class_label = class_labels[predicted_class_index]
+        print(predicted_class_label)
 
         if uid and contact:
             patient_records = PatientRecord.objects.filter(name=predicted_class_label, uid=uid, contact=contact)
@@ -532,7 +600,7 @@ def classify_image(request):
             patient_records = PatientRecord.objects.filter(name=predicted_class_label)
 
         context = {
-            'image_path': os.path.join(settings.MEDIA_URL, 'uploads', uploaded_image.name),
+            'image_path': os.path.join(settings.MEDIA_URL, 'uploads', image_path.name),
             'predicted_class_label': predicted_class_label,
             'patient_records': patient_records
         }
@@ -671,6 +739,10 @@ def image_login_capture_patient(request):
     email = request.GET.get('email', '')
     return render(request, 'app/patient/image_login_capture_patient.html', {'email': email})
 
+def image_login_capture_patient(request):
+    email = request.GET.get('email', '')
+    return render(request, 'app/patient/image_login_capture_patient.html', {'email': email})
+
 def preprocess_input1_image(img):
     img = img.resize((128, 128))  # Resize image to desired dimensions
     img_array = np.array(img)  # Convert PIL Image to numpy array
@@ -678,35 +750,156 @@ def preprocess_input1_image(img):
     img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
     return img_array
 
+# def doctor_capture_email(request):
+#     email = request.GET.get('email', '')
+#     if request.method == 'POST' and request.POST.get('image_data'):
+#         model_path = os.path.join(settings.BASE_DIR, 'YOLO.h5')
+#         model = load_model(model_path)
+
+#         frame = request.POST.get('image_data')
+#         img_data = frame.split(",")[1]
+#         img_data = base64.b64decode(img_data)
+        
+#         img = Image.open(BytesIO(img_data))
+
+#         input_image = preprocess_input1_image(img)
+
+#         predictions = model.predict(input_image)
+#         predicted_class_index = predictions.argmax()
+
+#         data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
+#         class_labels = sorted(os.listdir(data_dir))
+#         predicted_class_label = class_labels[predicted_class_index]
+#         print(predicted_class_label)
+        
+#         patient = get_object_or_404(Patient, name=predicted_class_label)
+
+#         if patient.email == email:
+#             patient = Patient.objects.get(name=predicted_class_label, email=email)
+#             patient_records = PatientRecord.objects.filter(name=predicted_class_label)
+#             return render(request, 'app/patient/patient_cred_result.html', {'patient_records': patient_records})
+#         else:
+#             return JsonResponse({'result': 'Email does not match'}, status=400)
+
+#     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+import os
+import base64
+from PIL import Image
+import torch
+from torchvision import transforms
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from .models import Patient, PatientRecord
+from facenet_pytorch import InceptionResnetV1  # Assuming your model is defined in app/models.py
+from django.conf import settings
+
+# def doctor_capture_email(request):
+#     email = request.GET.get('email', '')
+#     if request.method == 'POST' and 'capture' in request.POST:
+#         frame = request.POST.get('image_data')
+#         img_data = frame.split(",")[1]
+#         img_data = bytes(img_data, 'utf-8')
+
+#         media_dir = os.path.join('media/capture')
+#         if not os.path.exists(media_dir):
+#             os.makedirs(media_dir)
+
+#         with open(os.path.join(media_dir, 'captured_image.jpg'), 'wb') as f:
+#             f.write(base64.b64decode(img_data))
+#         print("Image captured successfully!")
+
+#         # Model Prediction
+#         model_path = os.path.join(settings.BASE_DIR, 'trained_model.pt')
+#         model = InceptionResnetV1(pretrained='vggface2', classify=True, num_classes=8)
+#         model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+#         model.eval()
+
+#         transform = transforms.Compose([
+#             transforms.Resize(299),
+#             transforms.CenterCrop(299),
+#             transforms.ToTensor(),
+#             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+#         ])
+
+#         image_path = os.path.join(media_dir, f'captured_image.jpg')
+#         image = Image.open(image_path)
+#         input_tensor = transform(image)
+#         input_batch = input_tensor.unsqueeze(0)
+        
+#         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#         model = model.to(device)
+#         input_batch = input_batch.to(device)
+        
+#         with torch.no_grad():
+#             output = model(input_batch)
+
+#         predicted_class_index = torch.argmax(output, dim=1).item()
+
+#         data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
+#         class_labels = sorted(os.listdir(data_dir))
+#         predicted_class_label = class_labels[predicted_class_index]
+#         print("Predicted Class Label:", predicted_class_label)
+
+#         patient = get_object_or_404(Patient, name=predicted_class_label)
+#         if patient.email == email:
+#             patient_records = PatientRecord.objects.filter(name=predicted_class_label)
+#             return render(request, 'app/patient/patient_cred_result.html', {'patient_records': patient_records})
+#         else:
+#             return JsonResponse({'result': 'Email does not match'}, status=400)
+
+#     return render(request, 'app/patient/image_capture_patient.html')
+
 def doctor_capture_email(request):
     email = request.GET.get('email', '')
-    if request.method == 'POST' and request.POST.get('image_data'):
-        model_path = os.path.join(settings.BASE_DIR, 'YOLO.h5')
-        model = load_model(model_path)
-
+    if request.method == 'POST':
         frame = request.POST.get('image_data')
         img_data = frame.split(",")[1]
-        img_data = base64.b64decode(img_data)
+        img_data = bytes(img_data, 'utf-8')
+
+        media_dir = os.path.join('media/capture')
+        if not os.path.exists(media_dir):
+            os.makedirs(media_dir)
+
+        with open(os.path.join(media_dir, 'captured_image.jpg'), 'wb') as f:
+            f.write(base64.b64decode(img_data))
+            
+        model_path = os.path.join(settings.BASE_DIR, 'trained_model.pt')
+        model = InceptionResnetV1(pretrained='vggface2', classify=True, num_classes=8)
+        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+        model.eval()
+
+        transform = transforms.Compose([
+            transforms.Resize(299),
+            transforms.CenterCrop(299),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
         
-        img = Image.open(BytesIO(img_data))
+        image_path = os.path.join(settings.MEDIA_ROOT, 'capture', 'captured_image.jpg')
+        image = Image.open(image_path)
+        input_tensor = transform(image)
+        input_batch = input_tensor.unsqueeze(0)
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = model.to(device)
+        input_batch = input_batch.to(device)
+        
+        with torch.no_grad():
+            output = model(input_batch)
 
-        input_image = preprocess_input1_image(img)
-
-        predictions = model.predict(input_image)
-        predicted_class_index = predictions.argmax()
+        predicted_class_index = torch.argmax(output, dim=1).item()
 
         data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
         class_labels = sorted(os.listdir(data_dir))
         predicted_class_label = class_labels[predicted_class_index]
-        print(predicted_class_label)
-        
-        patient = get_object_or_404(Patient, name=predicted_class_label)
+        print("Predicted Class Label:", predicted_class_label)
 
+        patient = get_object_or_404(Patient, name=predicted_class_label)
         if patient.email == email:
-            patient = Patient.objects.get(name=predicted_class_label, email=email)
             patient_records = PatientRecord.objects.filter(name=predicted_class_label)
             return render(request, 'app/patient/patient_cred_result.html', {'patient_records': patient_records})
         else:
             return JsonResponse({'result': 'Email does not match'}, status=400)
-
+    
     return JsonResponse({'error': 'Invalid request method'}, status=405)

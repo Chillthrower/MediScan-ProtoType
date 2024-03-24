@@ -2,92 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Capture Image</title>
-    <style>
-        #video-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin: auto;
-        }
-        #video {
-            width: 100%;
-            height: auto;
-        }
-        #capture-btn {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
+    <title>Image Capture</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Capture Image</h1>
-    <div id="video-container">
-        <video id="video" autoplay playsinline></video>
-        <button id="capture-btn">Capture Image</button>
-    </div>
+    <h1>Image Capture</h1>
+
+    <form id="captureForm" method="post" enctype="multipart/form-data" action="{% url 'doctor_capture_email' %}">
+        {% csrf_token %}
+        <br>
+        <video id="video" width="640" height="480" autoplay></video>
+        <button id="captureButton">Capture Image</button>
+        <input type="hidden" id="image_data" name="image_data">
+        <input type="hidden" id="email" name="email" value="{{ email }}">
+    </form>
 
     <script>
         const video = document.getElementById('video');
-        const captureBtn = document.getElementById('capture-btn');
+        const captureButton = document.getElementById('captureButton');
+        const imageDataInput = document.getElementById('image_data');
+        const emailInput = document.getElementById('email');
 
-        // Get user media (camera)
+        // Access webcam
         navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
+            .then((stream) => {
                 video.srcObject = stream;
             })
-            .catch(err => {
-                console.error('Error accessing camera:', err);
+            .catch((err) => {
+                console.error('Error accessing webcam: ', err);
             });
 
-        // Capture image from video stream
-        captureBtn.addEventListener('click', () => {
+        // Capture image from webcam and submit the form
+        captureButton.addEventListener('click', () => {
             const canvas = document.createElement('canvas');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
 
-            const imgData = canvas.toDataURL('image/jpeg');
+            // Set the captured image data to the hidden input field
+            imageDataInput.value = imageData;
             
-            // Send captured image data to server
-            fetch('/doctor_capture_email/?email={{ email }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: `image_data=${encodeURIComponent(imgData)}`
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Failed to capture image');
-                }
-            })
-            .then(data => {
-                console.log(data);
-                // Handle successful response (redirect or display message)
-            })
-            .catch(error => {
-                console.error('Error capturing image:', error);
-            });
+            // Submit the form
+            captureForm.submit();
         });
-
-        // Function to get CSRF token from cookie
-        function getCookie(name) {
-            const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-            return cookieValue ? cookieValue.pop() : '';
-        }
     </script>
 </body>
 </html>

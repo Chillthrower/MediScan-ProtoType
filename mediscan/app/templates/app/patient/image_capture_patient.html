@@ -14,7 +14,6 @@
         <video id="video" width="640" height="480" autoplay></video>
         <button id="captureButton">Capture Image</button>
         <button id="generateButton">Generate</button>
-        <button id="nextButton" disabled>Next</button>
         <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
     </form>
 
@@ -24,7 +23,6 @@
         const context = canvas.getContext('2d');
         const captureButton = document.getElementById('captureButton');
         const generateButton = document.getElementById('generateButton');
-        const nextButton = document.getElementById('nextButton');
     
         // Access webcam
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -74,7 +72,7 @@
                 headers: {'X-CSRFToken': '{{ csrf_token }}'},
                 success: function(response) {
                     alert('Model training completed!');
-                    nextButton.disabled = false;
+                    window.location.href = '/patient_login/'; // Redirect to patient login page
                 },
                 error: function(xhr, status, error) {
                     alert('Error: ' + xhr.responseText);
@@ -82,10 +80,6 @@
                     captureButton.disabled = false;
                 }
             });
-        });
-
-        nextButton.addEventListener('click', () => {
-            window.location.href = '/patient_login/';
         });
     </script>
 </body>
