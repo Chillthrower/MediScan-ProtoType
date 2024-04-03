@@ -27,6 +27,21 @@ from PIL import Image
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from django.urls import reverse
 from tensorflow.keras.preprocessing import image
+import os
+import base64
+from PIL import Image
+import torch
+from torchvision import transforms
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from .models import Patient, PatientRecord
+from facenet_pytorch import InceptionResnetV1  # Assuming your model is defined in app/models.py
+from django.conf import settings
+import torch
+from torchvision.transforms import transforms
+from PIL import Image
+from facenet_pytorch import InceptionResnetV1
+from io import BytesIO
 
 # Create your views here.
 
@@ -122,6 +137,25 @@ def patient_login(request):
         form = PatientLoginForm()
     return render(request, 'app/patient/patient_login.html', {'form': form})
 
+# def doctor_login(request):
+#     if request.method == 'POST':
+#         form = DoctorLoginForm(request.POST)
+#         if form.is_valid():
+#             email = form.cleaned_data['email']
+#             password = form.cleaned_data['password']
+#             try:
+#                 user = Doctor.objects.get(email=email)
+#                 if check_password(password, user.password):
+#                     login(request, user)
+#                     return redirect('record')
+#                 else:
+#                     messages.error(request, 'Invalid email or password. Please try again.')
+#             except Doctor.DoesNotExist:
+#                 messages.error(request, 'Invalid email or password. Please try again.')
+#     else:
+#         form = DoctorLoginForm()
+#     return render(request, 'app/doctor/doctor_login.html', {'form': form})
+
 def doctor_login(request):
     if request.method == 'POST':
         form = DoctorLoginForm(request.POST)
@@ -132,7 +166,8 @@ def doctor_login(request):
                 user = Doctor.objects.get(email=email)
                 if check_password(password, user.password):
                     login(request, user)
-                    return redirect('record')
+                    # return redirect('patient_cred')
+                    return HttpResponseRedirect(reverse('login_capture_or_upload') + f'?user_type=doctor&email={email}')
                 else:
                     messages.error(request, 'Invalid email or password. Please try again.')
             except Doctor.DoesNotExist:
@@ -608,6 +643,135 @@ def classify_image(request):
 
     return render(request, 'app/doctor/doctor_upload_patient.html')
 
+def preprocess_input_image(image_file):
+    # Read the content of the uploaded file
+    image_content = image_file.read()
+    # Create a BytesIO object with the content
+    image_stream = BytesIO(image_content)
+    # Load the image from the BytesIO object
+    img = image.load_img(image_stream, target_size=(128, 128))
+    # Convert the image to a NumPy array
+    img_array = image.img_to_array(img)
+    # Expand the dimensions to match the expected input shape of the model
+    img_array = np.expand_dims(img_array, axis=0)
+    # Normalize the pixel values to the range [0, 1]
+    img_array /= 255.0
+    return img_array
+
+def doctor_upload_email(request):
+    email = request.GET.get('email', '')
+    if request.method == 'POST' and request.FILES.get('image'):
+        model_path = os.path.join(settings.BASE_DIR, 'trained_model.pt')
+        model = InceptionResnetV1(pretrained='vggface2', classify=True, num_classes=8)
+        model.load_state_dict(torch.load("trained_model.pt", map_location=torch.device('cpu')))
+        
+        model.eval()
+
+        transform = transforms.Compose([
+            transforms.Resize(299),
+            transforms.CenterCrop(299),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
+
+        image_path = request.FILES['image']
+        image = Image.open(image_path)
+        input_tensor = transform(image)
+        input_batch = input_tensor.unsqueeze(0)
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = model.to(device)
+        input_batch = input_batch.to(device)
+        
+        with torch.no_grad():
+            output = model(input_batch)
+
+        # predictions = model.predict(input_image)
+        # predicted_class_index = predictions.argmax()
+        predicted_class_index = torch.argmax(output, dim=1).item()
+
+        data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
+        class_labels = sorted(os.listdir(data_dir))
+        predicted_class_label = class_labels[predicted_class_index]
+        print(predicted_class_label)
+
+        doctor = get_object_or_404(Doctor, name=predicted_class_label)
+        if doctor.email == email:
+            return redirect('record')
+        else:
+            return JsonResponse({'result': 'Email does not match'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def image_login_upload_doctor(request):
+    email = request.GET.get('email', '')
+    return render(request, 'app/doctor/image_login_upload_doctor.html', {'email': email})
+
+def image_login_capture_doctor(request):
+    email = request.GET.get('email', '')
+    return render(request, 'app/doctor/image_login_capture_doctor.html', {'email': email})\
+        
+def preprocess_input1_image(img):
+    img = img.resize((128, 128))  # Resize image to desired dimensions
+    img_array = np.array(img)  # Convert PIL Image to numpy array
+    img_array = img_array / 255.0  # Normalize pixel values
+    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+    return img_array
+
+def doctor_capture_email(request):
+    email = request.GET.get('email', '')
+    if request.method == 'POST':
+        frame = request.POST.get('image_data')
+        img_data = frame.split(",")[1]
+        img_data = bytes(img_data, 'utf-8')
+
+        media_dir = os.path.join('media/capture')
+        if not os.path.exists(media_dir):
+            os.makedirs(media_dir)
+
+        with open(os.path.join(media_dir, 'captured_image.jpg'), 'wb') as f:
+            f.write(base64.b64decode(img_data))
+            
+        model_path = os.path.join(settings.BASE_DIR, 'trained_model.pt')
+        model = InceptionResnetV1(pretrained='vggface2', classify=True, num_classes=8)
+        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+        model.eval()
+
+        transform = transforms.Compose([
+            transforms.Resize(299),
+            transforms.CenterCrop(299),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
+        
+        image_path = os.path.join(settings.MEDIA_ROOT, 'capture', 'captured_image.jpg')
+        image = Image.open(image_path)
+        input_tensor = transform(image)
+        input_batch = input_tensor.unsqueeze(0)
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = model.to(device)
+        input_batch = input_batch.to(device)
+        
+        with torch.no_grad():
+            output = model(input_batch)
+
+        predicted_class_index = torch.argmax(output, dim=1).item()
+
+        data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
+        class_labels = sorted(os.listdir(data_dir))
+        predicted_class_label = class_labels[predicted_class_index]
+        print("Predicted Class Label:", predicted_class_label)
+
+        doctor = get_object_or_404(Doctor, name=predicted_class_label)
+        if doctor.email == email:
+            return redirect('record')
+        else:
+            return JsonResponse({'result': 'Email does not match'}, status=400)
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
 ######################################################   PREDICTION   #############################################################
 
 def index(request):
@@ -635,8 +799,6 @@ def predict_disease(request):
 
 def capture_or_upload_patient(request):
     return render(request, 'app/patient/capture_or_upload_patient.html')
-
-from io import BytesIO
 
 def preprocess_input_image(image_file):
     # Read the content of the uploaded file
@@ -679,12 +841,7 @@ def preprocess_input_image(image_file):
 
 #     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-import torch
-from torchvision.transforms import transforms
-from PIL import Image
-from facenet_pytorch import InceptionResnetV1
-
-def doctor_upload_email(request):
+def patient_upload_email(request):
     email = request.GET.get('email', '')
     if request.method == 'POST' and request.FILES.get('image'):
         model_path = os.path.join(settings.BASE_DIR, 'trained_model.pt')
@@ -783,17 +940,6 @@ def preprocess_input1_image(img):
 
 #     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-import os
-import base64
-from PIL import Image
-import torch
-from torchvision import transforms
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from .models import Patient, PatientRecord
-from facenet_pytorch import InceptionResnetV1  # Assuming your model is defined in app/models.py
-from django.conf import settings
-
 # def doctor_capture_email(request):
 #     email = request.GET.get('email', '')
 #     if request.method == 'POST' and 'capture' in request.POST:
@@ -850,7 +996,7 @@ from django.conf import settings
 
 #     return render(request, 'app/patient/image_capture_patient.html')
 
-def doctor_capture_email(request):
+def patient_capture_email(request):
     email = request.GET.get('email', '')
     if request.method == 'POST':
         frame = request.POST.get('image_data')

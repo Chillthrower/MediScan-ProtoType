@@ -20,8 +20,8 @@
     
         let captureUrl, uploadUrl;
         if (userType === 'doctor') {
-            captureUrl = `#`;
-            uploadUrl = `#`;
+            captureUrl = `{% url 'image_login_capture_doctor' %}?email=${email}`;
+            uploadUrl = `{% url 'image_login_upload_doctor' %}?email=${email}`;
         } else {
             captureUrl = `{% url 'image_login_capture_patient' %}?email=${email}`;
             uploadUrl = `{% url 'image_login_upload_patient' %}?email=${email}`;

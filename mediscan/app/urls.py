@@ -32,11 +32,15 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     path('predict_disease/', views.predict_disease, name='predict_disease'),
     path('capture_or_upload_patient/', views.capture_or_upload_patient, name='capture_or_upload_patient'),
-    path('doctor_upload_email/', views.doctor_upload_email, name='doctor_upload_email'),
+    path('patient_upload_email/', views.patient_upload_email, name='patient_upload_email'),
     path('login_capture_or_upload/', views.login_capture_or_upload, name='login_capture_or_upload'),
     path('image_login_upload_patient/', views.image_login_upload_patient, name='image_login_upload_patient'),
     path('image_login_capture_patient/', views.image_login_capture_patient, name='image_login_capture_patient'),
+    path('patient_capture_email/', views.patient_capture_email, name='patient_capture_email'),
+    path('doctor_upload_email/', views.doctor_upload_email, name='doctor_upload_email'),
     path('doctor_capture_email/', views.doctor_capture_email, name='doctor_capture_email'),
+    path('image_login_upload_doctor/', views.image_login_upload_doctor, name='image_login_upload_doctor'),
+    path('image_login_capture_doctor/', views.image_login_capture_doctor, name='image_login_capture_doctor'),
 ]
 
 if settings.DEBUG:

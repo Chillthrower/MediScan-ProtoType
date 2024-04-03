@@ -8,7 +8,7 @@
 <body>
     <h1>Image Capture</h1>
 
-    <form id="captureForm" method="post" enctype="multipart/form-data" action="{% url 'patient_capture_email' %}">
+    <form id="captureForm" method="post" enctype="multipart/form-data" action="{% url 'doctor_capture_email' %}">
         {% csrf_token %}
         <br>
         <video id="video" width="640" height="480" autoplay></video>
