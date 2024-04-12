@@ -6,7 +6,7 @@
 }
 
 nav {
-    background-color: #333;
+    background-color:black;
     overflow: hidden;
 }
 
@@ -49,6 +49,7 @@ p{
 a:hover{
     color: aquamarine;
 } */
+
 * {
     box-sizing: border-box;
     
@@ -63,7 +64,9 @@ a:hover{
     background-size: cover; /* Ensure the background image covers the entire background */
     background-repeat: no-repeat; /* Prevent the background image from repeating */
     background-position: center;
-    
+    padding: 20px;
+    /* padding-bottom: 3px; */
+    margin-bottom: 1px;
 }
 body {
     margin: 20px;
@@ -73,13 +76,16 @@ body {
 nav {
     background-color: white;
     overflow: hidden;
+    padding: 1px;
+   
     
 }
 
 nav a {
     text-decoration: none;
-    padding: 20px;
+    padding: 10px;
     text-align: center;
+    padding-top: 30px;
     float: left;
     color: #002244;
     font-size: large;
@@ -93,3 +99,41 @@ h3{
         font-size: x-large;
     
     }
+.main{
+    background-image: url('/static/images/header.jpg');
+    background-size: cover; /* Ensure the background image covers the entire background */
+    background-repeat: no-repeat;
+
+}
+p{
+    font-size: larger;
+    font-weight: bolder;
+    color: #002244;
+    padding-left: 30px;
+    padding-right: 10px;
+    
+}
+.NName{
+    padding-top: 20px;
+}
+.address{
+    padding-bottom: 20px;
+    padding-left: 20%;
+    margin-left: 70px;
+}
+img{
+    padding-left: 50%;
+    
+}
+.submit{
+    display: flex;
+    align-items: center;
+    margin-left: 50%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 9px;
+    padding-left: 30px;
+    padding-right: 30px;
+    font-size: larger;
+    font-weight: bolder;
+}

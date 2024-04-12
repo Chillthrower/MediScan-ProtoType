@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>patient Signup</title>
+    <title>Patirnt Signup</title>
     {% load static %}
     <!-- Link to your CSS file -->
     <link rel="stylesheet" href="{% static "css/style.css" %}">
 </head>
 <body>
-    <form method="POST" action="{% url 'patient_signup' %}">
+    <form method="POST" action="{% url 'doctor_signup' %}">
         {% csrf_token %}
-        <h1 class="heading">Signup section for patients</h1>
+        <h1 class="heading">Signing Up as Patient</h1>
         <div class="navbar">
             <nav>
                 <a href="#">Home</a>
@@ -30,7 +30,10 @@
                     {% endfor %}
                 </div>
             {% endif %}
+        
+            <div class="NName">
             <p>Name:<input type="text" name="name" class="name" placeholder="enter your name"></p>
+        </div>
             <p>Age : <input type="text" class="age" id="age"  name="age"oninput="ValidateAge()"></p>
                 <p id="error_message"></p>
             <p>Gender:</p>
@@ -44,16 +47,19 @@
             </select></p>
             <p>PhoneNo:<input type="tel" name="phone_number" id="PhoneNo"></p>
             <p id="countryCode"></p>
-            <p>Address:<textarea name="address" id="address" rows="5" cols="100"></textarea></p>
+            <p>Address:</p><p><textarea name="address" id="address" rows="5" cols="100"></textarea></p>
+            
             <p>Pincode:<input type="number" name="pincode" id="pincode"></p>
             <form id="myFormDoc">
                 <p>Password: <input type="password" name="password" id="password" placeholder="Enter password" oninput="validatePasswordsDoc()"></p>
                 <p>confirmPassword: <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm password" oninput="validatePasswordsDoc()"> </p>
             </form>
+
             <p id="message"></p>
             <input type="submit" class="submit" value="Submit">
             <!-- <button type="button" class="next"  onclick="redirectToPage()">Next</button> -->
             <!-- <button type="button" class="button">Next<a href="#"></a></button> -->
+            
         </div>
     </form>
     <!-- Link to your JavaScript files -->
