@@ -31,7 +31,8 @@
                 </div>
             {% endif %}
             <p>Name:<input type="text" name="name" class="name" placeholder="enter your name"></p>
-            <p>Age:<input type="number" name="age" class="age" id="age"></p>
+            <p>Age : <input type="text" class="age" id="age"  name="age"oninput="ValidateAge()"></p>
+                <p id="error_message"></p>
             <p>Gender:</p>
             <p>
                 Male<input type="radio" class="gender" name="gender" value="M" id="male">
@@ -51,12 +52,13 @@
             </form>
             <p id="message"></p>
             <input type="submit" class="submit" value="Submit">
-            <button type="button" class="next"  onclick="redirectToPage()">Next</button>
+            <!-- <button type="button" class="next"  onclick="redirectToPage()">Next</button> -->
             <!-- <button type="button" class="button">Next<a href="#"></a></button> -->
         </div>
     </form>
     <!-- Link to your JavaScript files -->
     <script src="{% static "js/password.js" %}"></script>
     <script src="{% static "js/number_country.js" %}"></script>
+    <script src="{% static "js/test.js" %}"></script>
 </body>
 </html>

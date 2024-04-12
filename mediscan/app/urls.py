@@ -41,6 +41,8 @@ urlpatterns = [
     path('doctor_capture_email/', views.doctor_capture_email, name='doctor_capture_email'),
     path('image_login_upload_doctor/', views.image_login_upload_doctor, name='image_login_upload_doctor'),
     path('image_login_capture_doctor/', views.image_login_capture_doctor, name='image_login_capture_doctor'),
+    path('about_page/', views.about_page, name='about_page'),
+    path('contact/',views.contact,name='contact'),
 ]
 
 if settings.DEBUG:

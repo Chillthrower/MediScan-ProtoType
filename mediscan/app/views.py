@@ -45,6 +45,12 @@ from io import BytesIO
 
 # Create your views here.
 
+def about_page(request):
+    return render(request, 'app/about_page.html')
+
+def contact(request):
+    return render(request,'app/contact.html')
+
 def home(request):
     user = request.user
     return render(request, 'app/home.html', {'user': user})
@@ -292,8 +298,11 @@ def image_upload_patient(request):
 
 def train_model_doctor(request):
     # images_folder = 'G:/MEDISCAN_TEST04/MEDISCAN/MEDIA/DOCTOR'
-    images_folder = os.path.join(settings.MEDIA_ROOT, 'doctor')
-    data_dir = os.path.join(settings.BASE_DIR, 'media', 'doctor')
+    # images_folder = os.path.join(settings.MEDIA_ROOT, 'doctor')
+    # data_dir = os.path.join(settings.BASE_DIR, 'media', 'doctor')
+
+    images_folder = os.path.join(settings.MEDIA_ROOT, 'patient')
+    data_dir = os.path.join(settings.BASE_DIR, 'media', 'patient')
 
     image_exts = ['jpeg', 'jpg', 'bmp', 'png']
     for image_class in os.listdir(data_dir):

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Beautiful Webpage</title>
+    {% load static %}
+    <!-- <link rel="stylesheet" href="{% static "css/main.css" %}"> -->
+    <link rel="stylesheet" href="{% static "css/about.css" %}">
+    
+    
+</head>
+<body>
+    
+    <header>
+        <h1>MediScan: Unveiling Medical Narratives Through Faces</h1>
+    </header>
+    <div class="navbar">
+        
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">ContactUs</a>
+            <a href="{% url 'signupas' %}">SignUp</a>
+            <a href="{% url 'loginas' %}">Login</a>
+            <a href="{% url 'index' %}">Disease Prediction</a>
+            <h3>Mediscan</h3>
+            
+        </nav>
+        <div class="container">
+            <h1>More about Mediscan
+                <p>MediScan is a cutting-edge platform that leverages facial recognition technology to access patients' medical records swiftly and securely. Our innovative system eliminates the need for manual record retrieval, streamlining healthcare processes and improving patient care. By providing instant access to vital information, MediScan enhances emergency care, ensuring timely treatment for all patients.</p>
+            <h1>Our Mission
+            <p>At MediScan, our mission is to revolutionize healthcare by providing seamless access to medical records through facial recognition technology. We aim to empower individuals by simplifying record retrieval and enhancing patient care. Our platform is designed to prioritize patient privacy and data security, ensuring that all information is strictly confidential. Join us in transforming healthcare with MediScan!</p>
+            <h1>Our Vision
+            <p>MediScan envisions a future where healthcare is accessible, efficient, and patient-centered. By leveraging facial recognition technology, we aim to streamline healthcare processes, reduce paperwork, and enhance patient care. Our platform is designed to revolutionize emergency care, ensuring that patients receive timely treatment in critical situations. Join us in realizing our vision of a healthier, more connected world with MediScan!</p>
+            <h1>Our Values
+            <p>At MediScan, we are committed to upholding the highest standards of integrity, transparency, and patient care. Our platform is designed to prioritize patient privacy and data security, ensuring that all information is strictly confidential. We are dedicated to transforming emergency care through innovative technology, streamlining healthcare processes, and enhancing patient outcomes. Join us in embracing our values and transforming healthcare with MediScan!</p>
+            <h1>Our Team
+            <p>MediScan is powered by a team of dedicated professionals who are passionate about revolutionizing healthcare. Our team comprises experts in technology, healthcare, and data security, working together to create a platform that prioritizes patient care and data security. We are committed to delivering innovative solutions that enhance patient outcomes and streamline healthcare processes. Meet the team behind MediScan and join us in transforming healthcare!</p>
+            </h1>
+        </div>
+        
+    </div>
+</body>
+</html>
