@@ -20,7 +20,7 @@
         <input type="file" class="choose" id="id_images" name="images" multiple accept="image/*" required>
         <br>
         <button class="choose1" id="uploadButton" type="submit">Upload</button>
-        <button class="choose2"  id="generateButton">Generate</button>
+        <button class="choose2"  id="generateButton">Process Images</button>
         <button class="choose3"  id="nextButton" disabled>Next</button>
     </form>
 </div>
@@ -28,7 +28,10 @@
 </div>
 </div>
 <div class="container">
-    <img src="https://apextechinc.com/wp-content/uploads/2020/04/Fichier-7.png">
+    <div class="image">
+    <img src="{% static 'images/upl1.jpg' %}">
+</div>
+
     
     </div>
     <div class="gradient-overlay"></div>
