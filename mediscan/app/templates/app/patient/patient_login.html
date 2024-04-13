@@ -3,22 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoginDoc</title>
+    <title>LoginPatient</title>
     {% load static %}
     <!-- Link to your CSS file -->
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 <body>
-    <h1 class="heading">Login Page for patient</h1>
-    <div class="navbar">
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">About</a>
-            <a href="#">ContactUs</a>
-            <h3>Mediscan</h3>
-        </nav>
-    </div>
-
+    <h1 class="heading">Logging in as patient</h1>
+    
+<div class="cover">
     <div class="container">
         <h2>Login</h2>
         {% for message in messages %}
@@ -35,5 +28,6 @@
             <input type="submit" value="Login">
         </form>
     </div>
+</div>
 </body>
 </html>

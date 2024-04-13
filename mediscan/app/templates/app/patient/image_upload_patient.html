@@ -3,18 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Upload Image</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/image_upload.css" %}">
 </head>
 <body>
-    <h1>Upload Image</h1>
+    <h1>Upload your Image</h1>
+<div class="wrapper">
+    
+  <div class="content">
+<div class="section">
+    <div class="card">
     <form id="uploadForm" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+        <!-- {% csrf_token %} -->
         <br>
         <label for="id_images">Images:</label>
-        <input type="file" id="id_images" name="images" multiple accept="image/*" required>
+        <input type="file" class="choose" id="id_images" name="images" multiple accept="image/*" required>
         <br>
-        <button id="uploadButton" type="submit">Upload</button>
-        <button id="generateButton">Generate</button>
+        <button class="choose1" id="uploadButton" type="submit">Upload</button>
+        <button class="choose2"  id="generateButton">Generate</button>
+        <button class="choose3"  id="nextButton" disabled>Next</button>
     </form>
+</div>
+
+</div>
+</div>
+<div class="container">
+    <img src="https://apextechinc.com/wp-content/uploads/2020/04/Fichier-7.png">
+    
+    </div>
+    <div class="gradient-overlay"></div>
+
+</div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -30,11 +49,11 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/train_patient/',
+                    url: '/train_doctor/',
                     headers: {'X-CSRFToken': '{{ csrf_token }}'},
                     success: function(response) {
                         alert('Model training completed!');
-                        window.location.href = '/patient_login/';
+                        $('#nextButton').prop('disabled', false);
                     },
                     error: function(xhr, status, error) {
                         alert('Error: ' + xhr.responseText);
@@ -42,6 +61,10 @@
                         $('#uploadButton').prop('disabled', false);
                     }
                 });
+            });
+
+            $('#nextButton').click(function() {
+                window.location.href = '/doctor_login/';
             });
         });
     </script>
