@@ -10,17 +10,17 @@
     <!-- <link rel="stylesheet" href="login.css"> -->
 </head>
 <body><div class="header">
-    <h1 class="heading">Login Page for doctor</h1>
+    <h1 class="heading">Logging in as doctor </h1>
 </div>
     <div class="navbar">
         <nav>
-            <a href="#">Home</a>
+            <!-- <a href="#">Home</a>
             <a href="#">About</a>
-            <a href="#">ContactUs</a>
+            <a href="#">ContactUs</a> -->
             <h3>Mediscan</h3>
         </nav>
     </div>
-
+<div class="cover">
     <div class="container">
         <h2>Login</h2>
         {% for message in messages %}
@@ -34,8 +34,9 @@
             <input type="text" id="email" name="email" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <input type="submit" value="Login">
+            <input class="submit" type="submit" value="Login">
         </form>
     </div>
+</div>
 </body>
 </html>

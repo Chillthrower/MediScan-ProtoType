@@ -3,14 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoginPatient</title>
+    <title>LoginDoc</title>
     {% load static %}
     <!-- Link to your CSS file -->
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <!-- <link rel="stylesheet" href="login.css"> -->
 </head>
-<body>
-    <h1 class="heading">Logging in as patient</h1>
-    
+<body><div class="header">
+    <h1 class="heading">Logging in as Patient </h1>
+</div>
+    <div class="navbar">
+        <nav>
+            <!-- <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">ContactUs</a> -->
+            <h3>Mediscan</h3>
+        </nav>
+    </div>
 <div class="cover">
     <div class="container">
         <h2>Login</h2>
@@ -19,13 +28,13 @@
                 {{ message }}
             </div>
         {% endfor %}
-        <form action="{% url 'patient_login' %}" method="post">
+        <form action="{% url 'doctor_login' %}" method="post">
             {% csrf_token %}
             <label for="email">Email:</label>
             <input type="text" id="email" name="email" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <input type="submit" value="Login">
+            <input class="submit" type="submit" value="Login">
         </form>
     </div>
 </div>
