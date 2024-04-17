@@ -8,10 +8,14 @@
     <link rel="stylesheet" href={% static "css/person.css" %}>
 </head>
 <body>
+    <h3>Mediscan</h3>
+    <div class="content">
     <div class="container">
         <h2>Capture or Upload Patient</h2>
+       
         <a href= {% url 'doctor_capture_patient' %} class="button">Capture</a>
         <a href={% url 'classify_image' %} class="button">Upload</a>
     </div>
+</div>
 </body>
 </html>

@@ -2,18 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Image</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/image_upload.css' %}">
 </head>
 <body>
     <h1>Upload Image</h1>
-    <form id="uploadForm" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="image">
-        <input type="hidden" name="email" value="{{ email }}">
-        <button type="submit">Upload</button>
-    </form>
+    <div class="wrapper">
+        <div class="content">
+            <div class="section">
+                <div class="card">
+                    <form id="uploadForm" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="id_images">Images:</label>
+                        <input type="file"  class="choose"  name="image">
+                        <input type="hidden" name="email" value="{{ email }}">
+                        <button type="submit" class="choose1" >Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    
+    <div class="container">
+        <img src="{% static 'images/image1.jpg' %}">
+    </div>
+    <div class="gradient-overlay"></div>
 
+</div>
     <script>
         // Get the email from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
@@ -21,7 +36,10 @@
 
         // Append email parameter to the form action URL
         document.getElementById("uploadForm").action = `/doctor_upload_email/?email=${email}`;
-
     </script>
 </body>
 </html>
+
+
+
+

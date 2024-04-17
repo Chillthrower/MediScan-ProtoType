@@ -4,14 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Choose Action</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/login_cap_or_upload.css' %}">
 </head>
 <body>
-    
-    <h1>Choose an action</h1>
-    <div>
+    <div class="heading">
+    <h1>What do you want to do ??
+        Capture or Upload image
+    </h1>
+</div>
+<h3>Mediscan</h3>
+    <div class="cover">
+        <div class="container">
+        
         <button id="captureBtn">Capture Image</button>
-        <button id="uploadBtn">Upload Image</button>
+        <button class="btn2" id="uploadBtn">Upload Image</button>
+        
     </div>
+    
+    </div>
+
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
