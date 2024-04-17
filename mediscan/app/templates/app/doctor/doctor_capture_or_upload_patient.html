@@ -5,16 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     {% load static %}
-    <link rel="stylesheet" href={% static "css/person.css" %}>
+    <link rel="stylesheet" href="{% static 'css/login_cap_or_upload.css' %}">
 </head>
 <body>
+    <div class="heading">
+        <h1>Capture or Upload patient's image??</h1>
+    </div>
     <h3>Mediscan</h3>
-    <div class="content">
+    <div class="cover">
     <div class="container">
-        <h2>Capture or Upload Patient</h2>
+        
        
-        <a href= {% url 'doctor_capture_patient' %} class="button">Capture</a>
-        <a href={% url 'classify_image' %} class="button">Upload</a>
+        <button onclick="window.location.href='{% url 'doctor_capture_patient' %}';" class="button" id="captureBtn">Capture Image</button>
+        <button onclick="window.location.href='{% url 'classify_image' %}';" class="btn2" id="uploadBtn">Upload Image</button>
+
+        
     </div>
 </div>
 </body>
