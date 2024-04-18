@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Details</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/patient_record.css' %}">
 </head>
 <body>
+    <div class="header">
     <h1>Patient Details</h1>
+</div>
+<div class="container">
     <table border="1">
         <tr>
             <th>Name</th>
@@ -37,5 +42,6 @@
             <td>{{ patient.hospitalizations }}</td>
         </tr>
     </table>
+</div>
 </body>
 </html>
