@@ -4,11 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Image Classification Result</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/result.css' %}">
 </head>
 <body>
-    <h1>Result:</h1>
+   
+    <h1>Patient Record</h1>
+    <div class="container">
     <img src="{{ image_path }}" alt="Uploaded Image">
-    <p>Predicted Class: {{ predicted_class_label }}</p>
+    <p>Name: {{ predicted_class_label }}</p>
 
     <h2>Patient Information:</h2>
     {% if patient_records %}
@@ -46,6 +50,7 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
     {% else %}
         <p>No patient records found for the predicted class.</p>
     {% endif %}
