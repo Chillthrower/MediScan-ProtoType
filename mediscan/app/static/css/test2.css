@@ -22,7 +22,7 @@ body {
 nav {
     background-color: white;
     overflow: hidden;
-    
+    margin-bottom: 2px;
 }
 
 nav a {
@@ -33,6 +33,7 @@ nav a {
     color: #002244;
     font-size: large;
     font-weight: bolder;
+    margin-bottom: 1px;
 }
 h3{
         color: #002244;
@@ -40,6 +41,8 @@ h3{
         float: right;
         padding-right: 5%;
         font-size: x-large;
+        margin-bottom: 1px;
+        margin-top: 15px;
     
     }
 .content{
