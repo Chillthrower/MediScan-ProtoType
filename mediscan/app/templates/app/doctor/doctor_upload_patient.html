@@ -4,16 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Image Classification</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/doctor_upload_patient.css" %}">
 </head>
 <body>
+    <h1>Upload patient details</h1>
+    <div class="wrapper">
+    
+        <div class="content">
+      <div class="section">
+          <div class="card">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <input type="file" name="image">
+        <input type="file" class="choose" name="image">
         <label for="uid">UID:</label>
         <input type="text" name="uid" id="uid">
+        <br>
+        
+        
         <label for="contact">Contact Number:</label>
-        <input type="text" name="contact" id="contact">
-        <button type="submit">Classify Image</button>
+        <input type="text" class="contact" name="contact" id="contact">
+        <button type="submit" class="choose2">Enter</button>
     </form>
+</div>
+
+</div>
+</div>
+<div class="container">
+    <div class="image">
+    <img src="{% static 'images/image1.jpg' %}">
+</div>
+</div>
+<div class="gradient-overlay"></div>
+
+</div>
 </body>
 </html>
