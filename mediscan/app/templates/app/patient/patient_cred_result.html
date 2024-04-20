@@ -4,10 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Records</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/result.css' %}">
 </head>
 <body>
     <h1>Patient Records</h1>
-    <table border="1">
+    <div class="container1">
+        <h2>This table is only for viewing your medical report.<br>
+            You cannot make any changes to this record.
+        </h2>
+    <table border="1" class="table1">
         <tr>
             <th>Name</th>
             <th>Age</th>
@@ -43,5 +49,6 @@
         </tr>
         {% endfor %}
     </table>
+</div>
 </body>
 </html>
