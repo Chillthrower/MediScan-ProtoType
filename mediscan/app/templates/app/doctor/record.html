@@ -8,10 +8,17 @@
     <link rel="stylesheet" href={% static "css/person.css" %}>
 </head>
 <body>
-    <div class="container">
-        <h2>Choose What you want to do</h2>
-        <a href= "{% url 'add_patient_record' %}" class="button">Fill New Record</a>
-        <a href="{% url 'doctor_capture_or_upload_patient' %}" class="button">Scan the Patient</a>
-    </div>
+    
+        <h1>Choose what you want to do</h1>
+        <div class="content">
+            <div class="section">
+                <div class="card">
+                    <a href= "{% url 'add_patient_record' %}" class="button1">Fill New Record</a>
+        <a href="{% url 'doctor_capture_or_upload_patient' %}" class="button2">Scan the Patient</a>
+                </div>
+            </div>
+        </div>
+        
+
 </body>
 </html>
