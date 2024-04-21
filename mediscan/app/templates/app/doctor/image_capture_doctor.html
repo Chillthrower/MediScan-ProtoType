@@ -4,19 +4,24 @@
     <meta charset="UTF-8">
     <title>Image Capture</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/capture.css' %}">
+</head>
 </head>
 <body>
     <h1>Image Capture</h1>
-
+    <div class="container">
+        <div class="card">
     <form id="captureForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <br>
         <video id="video" width="640" height="480" autoplay></video>
-        <button id="captureButton">Capture Image</button>
-        <button id="generateButton">Generate</button>
+        <button id="captureButton" class="choose3">Capture Image</button>
+        <button id="generateButton" class="choose3">Generate</button>
         <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
     </form>
-
+</div>
+</div>
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
