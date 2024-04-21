@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static "css/style.css" %}">
 </head>
 <body>
-    <form method="POST" action="{% url 'doctor_signup' %}">
+    <form method="POST" action="{% url 'patient_signup' %}">
         {% csrf_token %}
         <h1 class="heading">Signing Up as Patient</h1>
         <div class="navbar">
